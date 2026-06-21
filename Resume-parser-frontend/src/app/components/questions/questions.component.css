@@ -1,0 +1,57 @@
+/* Questions component styles */
+.questions-container {
+    max-height: 80vh;
+    overflow-y: auto;
+    background: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    transition: all 0.3s ease;
+}
+
+.questions-header {
+    border-bottom: 1px solid var(--border-color) !important;
+}
+
+.list-group-item {
+    background: transparent !important;
+    color: var(--text-main) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    padding-bottom: 2rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.badge-skill {
+    background-color: var(--primary) !important;
+    color: white !important;
+    padding: 0.6rem 1rem !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.5px;
+}
+
+.difficulty-label {
+    color: var(--text-muted) !important;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+}
+
+.btn-insight {
+    background: var(--bg-main) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--primary) !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease;
+}
+
+.btn-insight:hover {
+    background: var(--primary) !important;
+    color: white !important;
+}
+
+.answer-box {
+    background: var(--bg-main) !important;
+    border-left: 4px solid var(--primary) !important;
+    color: var(--text-main) !important;
+}
+
+[data-theme='dark'] .text-dark {
+    color: var(--text-main) !important;
+}

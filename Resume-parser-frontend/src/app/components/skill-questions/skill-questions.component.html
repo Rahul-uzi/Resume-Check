@@ -1,0 +1,161 @@
+<div class="skill-questions-container">
+    <!-- Header -->
+    <header class="section-header card shadow-lg border-0 rounded-4 overflow-hidden mb-5">
+        <div class="card-body p-5 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-4">
+                <div class="p-4 bg-primary rounded-4 shadow-sm">
+                    <i class="bi bi-cpu text-white display-5"></i>
+                </div>
+                <div>
+                    <h1 class="fw-bold mb-1">Knowledge Graph</h1>
+                    <p class="text-muted mb-0">AI-generated interview intelligence from your professional vault</p>
+                </div>
+            </div>
+            <div class="text-center p-3 bg-light rounded-4 border px-5">
+                <span class="d-block fw-bold text-dark display-6">{{ questions.length }}</span>
+                <span class="text-uppercase small text-muted font-weight-bold">Intelligence Nodes</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Resume Selector Navigation -->
+    <section class="resume-selector-section mb-5">
+        <div class="d-flex align-items-center gap-2 mb-4">
+            <i class="bi bi-funnel-fill text-primary"></i>
+            <span class="text-dark fw-bold text-uppercase small">Discovery Filter</span>
+        </div>
+
+        <div class="resume-cards d-flex flex-wrap gap-3">
+            <div class="card bg-white border-0 shadow-sm rounded-4 cursor-pointer transition-all border-hover"
+                [class.active-border]="!selectedResumeId" (click)="loadAllQuestions()" style="min-width: 150px;">
+                <div class="card-body p-3 text-center" [class.bg-primary]="!selectedResumeId"
+                    [class.text-white]="!selectedResumeId">
+                    <i class="bi bi-grid-fill mb-2 d-block h4"></i>
+                    <span class="fw-bold small d-block">Global View</span>
+                    <span class="opacity-75 smallest">Entire Vault</span>
+                </div>
+            </div>
+
+            <div *ngFor="let resume of resumes"
+                class="card bg-white border-0 shadow-sm rounded-4 cursor-pointer transition-all border-hover"
+                [class.active-border]="selectedResumeId === resume.resume_id" (click)="selectResume(resume.resume_id)"
+                style="min-width: 150px;">
+                <div class="card-body p-3 text-center" [class.bg-primary]="selectedResumeId === resume.resume_id"
+                    [class.text-white]="selectedResumeId === resume.resume_id">
+                    <i class="bi bi-person-fill mb-2 d-block h4"></i>
+                    <span class="fw-bold small d-block text-truncate">{{ getResumeName(resume) }}</span>
+                    <span class="opacity-75 smallest">{{ resume.data.skills.length || 0 }} Skills</span>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="resumesLoading" class="mt-4 text-center">
+            <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+            <span class="text-muted small">Synchronizing vault profiles...</span>
+        </div>
+    </section>
+
+    <!-- Active Profile Meta -->
+    <div class="resume-info-section mb-5 p-4 bg-white rounded-4 shadow-sm border"
+        *ngIf="selectedResumeId && !loading && questions.length > 0">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="fw-bold mb-1 text-dark">Active Profile: <span class="text-primary">{{ selectedResumeName
+                        }}</span></h4>
+                <div class="d-flex gap-2 flex-wrap mt-2">
+                    <span *ngFor="let skill of resumeSkills.slice(0, 10)"
+                        class="badge bg-light text-primary border-0 small">
+                        {{ skill }}
+                    </span>
+                </div>
+            </div>
+            <button class="btn btn-dark rounded-pill px-4 fw-bold shadow-sm" (click)="toggleAllAnswers()">
+                <i class="bi bi-lightning-fill me-2"></i>
+                Toggle Model Answers
+            </button>
+        </div>
+    </div>
+
+    <!-- Questions Grid -->
+    <div class="questions-grid row g-4 mt-5" *ngIf="!loading && questions.length > 0">
+        <div *ngFor="let question of questions; let i = index" class="col-md-6 col-xl-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 transition-all shadow-hover border border-light"
+                [class.border-success]="showAnswers[i]" style="border: 1px solid rgba(0,0,0,0.05) !important;">
+
+                <div class="card-body p-4 position-relative">
+                    <div class="position-absolute top-0 end-0 p-4 opacity-10">
+                        <span class="h1 font-weight-black">#{{ i + 1 }}</span>
+                    </div>
+
+                    <div class="mb-4">
+                        <span class="badge rounded-pill px-3 py-2 fw-bold text-uppercase"
+                            [style.background-color]="getSkillColor(question.skill)" style="font-size: 0.65rem;">
+                            {{ question.skill }}
+                        </span>
+                        <span class="badge rounded-pill bg-light text-dark border ms-2 px-3 py-2 text-uppercase fw-bold"
+                            style="font-size: 0.65rem;">
+                            {{ question.difficulty }}
+                        </span>
+                    </div>
+
+                    <h5 class="fw-bold text-dark mb-4 lh-base" style="min-height: 4.5rem;">{{ question.question }}</h5>
+
+                    <div class="topics mb-4">
+                        <span class="badge bg-light text-secondary border-0 me-1 mb-1"
+                            *ngFor="let topic of question.topics">
+                            <i class="bi bi-tag-fill me-1"></i> {{ topic }}
+                        </span>
+                    </div>
+
+                    <button class="btn w-100 rounded-pill fw-bold py-2 mt-auto"
+                        [class.btn-outline-primary]="!showAnswers[i]" [class.btn-success]="showAnswers[i]"
+                        (click)="toggleAnswer(i)">
+                        {{ showAnswers[i] ? 'Obscure Approach' : 'Reveal Model Answer' }}
+                    </button>
+
+                    <div class="answer-section mt-4 p-3 bg-success bg-opacity-5 rounded-4 border border-success border-opacity-10"
+                        *ngIf="showAnswers[i]">
+                        <div class="d-flex align-items-center gap-2 mb-2 text-success small fw-bold text-uppercase">
+                            <i class="bi bi-robot"></i> AI Recommended Pattern
+                        </div>
+                        <p class="text-secondary small mb-0 lh-lg">{{ question.answer }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-grow text-primary mb-4" style="width: 4rem; height: 4rem;"></div>
+        <h3 class="fw-bold text-dark">Synthesizing Intelligence</h3>
+        <p class="text-muted">Generating model-based interview patterns from vault metadata...</p>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && questions.length === 0" class="text-center py-5 bg-white shadow-sm rounded-4 border mt-5">
+        <i class="bi bi-hdd-network display-1 text-muted opacity-25 mb-4"></i>
+        <h3 class="fw-bold text-secondary">Neural Path Empty</h3>
+        <p class="text-muted">This selection does not have enough indexed metadata for intelligence generation.</p>
+    </div>
+</div>
+
+<style>
+    .smallest {
+        font-size: 0.65rem;
+    }
+
+    .smallest-uppercase {
+        font-size: 0.6rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+    }
+
+    .active-border {
+        border: 2px solid var(--bs-primary) !important;
+    }
+
+    .border-hover:hover {
+        border-color: var(--bs-primary) !important;
+    }
+</style>

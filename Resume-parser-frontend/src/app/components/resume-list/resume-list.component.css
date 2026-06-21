@@ -1,0 +1,62 @@
+.list-container {
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.shadow-hover {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.shadow-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--glass-shadow) !important;
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+.skills-preview {
+    mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+}
+
+.modal-content {
+    background: var(--bg-card) !important;
+    color: var(--text-main) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.modal-backdrop-blur {
+    backdrop-filter: blur(10px);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.hover-opacity-100 {
+    opacity: 0.5;
+    transition: opacity 0.2s ease;
+}
+
+.hover-opacity-100:hover {
+    opacity: 1 !important;
+}
+
+/* Badge styling for list */
+.badge.bg-light {
+    background-color: var(--border-color) !important;
+    color: var(--text-muted) !important;
+}
+
+.list-group-item {
+    background-color: transparent !important;
+    border-color: var(--border-color) !important;
+    color: var(--text-main) !important;
+}

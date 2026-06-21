@@ -1,0 +1,85 @@
+<div class="d-flex flex-column min-vh-100">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                <div class="logo-icon">
+                    <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+                        <rect width="40" height="40" rx="8" fill="url(#gradient)" />
+                        <path d="M12 14h16M12 20h16M12 26h10" stroke="white" stroke-width="2" stroke-linecap="round" />
+                        <defs>
+                            <linearGradient id="gradient" x1="0" y1="0" x2="40" y2="40">
+                                <stop offset="0%" stop-color="#fff" stop-opacity="0.2" />
+                                <stop offset="100%" stop-color="#fff" stop-opacity="0.1" />
+                            </linearGradient>
+                        </defs>
+                    </svg>
+                </div>
+                <div class="d-flex flex-column">
+                    <span class="fw-bold h5 mb-0">ResumeX Pro</span>
+                    <small class="text-white-50" style="font-size: 0.75rem;">AI Powered Analysis</small>
+                </div>
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto gap-2 align-items-center">
+                    <li class="nav-item">
+                        <button class="nav-link btn btn-link text-decoration-none px-3 rounded-pill"
+                            [class.active]="activeTab === 'upload'" (click)="setActiveTab('upload')">
+                            <i class="bi bi-cloud-arrow-up me-1"></i> Upload
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link btn btn-link text-decoration-none px-3 rounded-pill"
+                            [class.active]="activeTab === 'list'" (click)="setActiveTab('list')">
+                            <i class="bi bi-files me-1"></i> Resumes
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link btn btn-link text-decoration-none px-3 rounded-pill"
+                            [class.active]="activeTab === 'search'" (click)="setActiveTab('search')">
+                            <i class="bi bi-search me-1"></i> Search
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link btn btn-link text-decoration-none px-3 rounded-pill"
+                            [class.active]="activeTab === 'questions'" (click)="setActiveTab('questions')">
+                            <i class="bi bi-chat-square-text me-1"></i> Interview
+                        </button>
+                    </li>
+
+                    <!-- Theme Toggle -->
+                    <li class="nav-item ms-lg-2">
+                        <button
+                            class="btn btn-theme-toggle rounded-circle p-2 d-flex align-items-center justify-content-center"
+                            (click)="toggleTheme()"
+                            [title]="isDarkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
+                            <i class="bi" [class.bi-moon-stars-fill]="!isDarkMode" [class.bi-sun-fill]="isDarkMode"></i>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow-1 d-flex flex-column">
+        <div class="container my-4 flex-grow-1">
+            <app-upload *ngIf="activeTab === 'upload'"></app-upload>
+            <app-resume-list *ngIf="activeTab === 'list'"></app-resume-list>
+            <app-search *ngIf="activeTab === 'search'"></app-search>
+            <app-skill-questions *ngIf="activeTab === 'questions'"></app-skill-questions>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-3 text-center text-white-50 mt-auto">
+        <div class="container">
+            <small>Powered by Gemini Intelligence & Vector Search Technology</small>
+        </div>
+    </footer>
+</div>

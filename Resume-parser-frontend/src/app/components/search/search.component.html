@@ -1,0 +1,148 @@
+<div class="search-container mb-5">
+    <div class="card shadow-lg border-0 rounded-4 overflow-hidden mb-5">
+        <div class="card-body p-5">
+            <h2 class="fw-bold text-dark display-6 mb-2">Intelligent Discovery</h2>
+            <p class="text-muted mb-5">Find the perfect candidate using semantic search technology</p>
+
+            <div class="search-form p-4 bg-light rounded-4 mb-5 border">
+                <div class="row g-4 align-items-end">
+                    <div class="col-lg-12">
+                        <label class="form-label fw-bold text-dark small text-uppercase">Semantic Query</label>
+                        <div class="input-group input-group-lg shadow-sm">
+                            <span class="input-group-text border-end-0"><i class="bi bi-search text-primary"></i></span>
+                            <input type="text" class="form-control border-start-0 ps-0"
+                                placeholder="e.g. Senior Python Developer with AWS experience" [(ngModel)]="searchQuery"
+                                (keyup.enter)="search()">
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label fw-bold text-dark small text-uppercase">Mandatory Skills</label>
+                        <input type="text" class="form-control" placeholder="e.g. React, Docker" [(ngModel)]="skills">
+                    </div>
+                    <div class="col-md-7 d-flex gap-2">
+                        <button class="btn btn-primary flex-grow-1 py-2 fw-bold rounded-3 shadow-sm" (click)="search()"
+                            [disabled]="loading || !searchQuery">
+                            <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                            <i class="bi bi-cpu me-2" *ngIf="!loading"></i>
+                            Discovery Search
+                        </button>
+                        <button class="btn btn-outline-secondary px-4 rounded-3" (click)="clearSearch()">Reset</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error -->
+            <div *ngIf="error" class="alert alert-danger rounded-4 border-0 d-flex align-items-center gap-3 mb-5">
+                <i class="bi bi-exclamation-triangle-fill h4 mb-0"></i>
+                <div>{{ error }}</div>
+            </div>
+
+            <!-- Results -->
+            <div *ngIf="searchResults.length > 0" class="results-grid row g-4">
+                <div class="col-12 mb-3">
+                    <h4 class="fw-bold text-dark"><i class="bi bi-funnel me-2"></i>Discovery Matches</h4>
+                </div>
+
+                <div *ngFor="let result of searchResults" class="col-md-6 col-lg-4">
+                    <div class="card h-100 border-0 shadow-sm rounded-4 shadow-hover transition-all cursor-pointer border glass"
+                        (click)="viewResume(result)">
+                        <div class="card-body p-4">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div class="p-3 bg-primary bg-opacity-10 rounded-3">
+                                    <i class="bi bi-person-check-fill text-primary h3 mb-0"></i>
+                                </div>
+                                <div class="text-end">
+                                    <h3 class="fw-bold text-primary mb-0">{{ result.score ? (result.score *
+                                        100).toFixed(0) : '0' }}%</h3>
+                                    <span class="text-muted small text-uppercase">AI Match</span>
+                                </div>
+                            </div>
+
+                            <h5 class="fw-bold text-dark mb-1 text-truncate">{{ result.data.personal_info?.name ||
+                                'Anonymous' }}</h5>
+                            <p class="text-muted small mb-3 text-truncate"><i class="bi bi-envelope me-2"></i>{{
+                                result.data.personal_info?.email || 'No email' }}</p>
+
+                            <div class="skills-preview mb-4 overflow-hidden" style="height: 60px;">
+                                <div class="d-flex flex-wrap gap-1">
+                                    <span *ngFor="let skill of result.data.skills?.slice(0, 5)"
+                                        class="badge bg-light text-secondary border small">
+                                        {{ skill }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                                <span class="small text-muted"><i class="bi bi-file-earmark-text me-2"></i>{{
+                                    result.data.filename }}</span>
+                                <i class="bi bi-chevron-right text-primary opacity-50"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty results after search -->
+            <div *ngIf="!loading && searchResults.length === 0 && searchQuery" class="text-center py-5">
+                <i class="bi bi-search-heart display-1 text-muted opacity-25 mb-4"></i>
+                <h4 class="fw-bold text-secondary">No perfect matches found</h4>
+                <p class="text-muted">Try adjusting your query or mandatory skills.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- View Modal (Same as list-card for consistency) -->
+<div *ngIf="selectedResume" class="modal show d-block" tabindex="-1"
+    style="background: rgba(0,0,0,0.6); backdrop-filter: blur(5px);">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 rounded-4 shadow-lg">
+            <div class="modal-header border-0 p-4">
+                <h4 class="fw-bold mb-0">Candidate Insight</h4>
+                <button type="button" class="btn-close" (click)="closeModal()"></button>
+            </div>
+            <div class="modal-body p-4 pt-0">
+                <div class="p-4 bg-primary bg-opacity-5 rounded-4 mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-auto">
+                            <div class="p-4 bg-primary rounded-4 shadow">
+                                <i class="bi bi-person-badge-fill text-white display-5"></i>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <h2 class="fw-bold mb-1 text-dark">{{ selectedResume.data?.personal_info?.name ||
+                                'Anonymous' }}</h2>
+                            <p class="text-primary mb-0"><i class="bi bi-envelope me-2"></i>{{
+                                selectedResume.data?.personal_info?.email || 'No email' }}</p>
+                            <span class="badge bg-white text-dark shadow-sm mt-2"><i
+                                    class="bi bi-file-earmark-text me-2"></i>{{ selectedResume.data?.filename }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4 mb-4">
+                    <div class="col-12">
+                        <h6 class="text-uppercase fw-bold text-muted small mb-3">Professional Skills</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span *ngFor="let skill of selectedResume.data?.skills"
+                                class="badge bg-light text-primary border p-2 px-3 fw-medium">
+                                {{ skill }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="experience-section mt-4" *ngIf="selectedResume.data?.experience">
+                    <h6 class="text-uppercase fw-bold text-muted small mb-3">Experience Trace</h6>
+                    <div class="list-group rounded-4 border-0">
+                        <div *ngFor="let exp of selectedResume.data?.experience"
+                            class="list-group-item bg-light border-0 mb-2 rounded-4 p-3">
+                            <h6 class="fw-bold text-dark mb-1">{{ exp.role }}</h6>
+                            <p class="text-muted small mb-0">{{ exp.company }} • {{ exp.duration }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

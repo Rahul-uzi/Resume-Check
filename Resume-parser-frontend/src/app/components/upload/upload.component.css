@@ -1,0 +1,69 @@
+.upload-dropzone {
+    border: 2px dashed var(--border-color);
+    background-color: var(--bg-main);
+    color: var(--text-muted);
+    border-radius: 24px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.upload-dropzone:hover {
+    border-color: var(--primary);
+    background-color: var(--border-color);
+}
+
+.upload-dropzone.drag-over {
+    border-color: var(--primary);
+    background-color: var(--primary-glow);
+    transform: scale(1.02);
+}
+
+.upload-dropzone.has-file {
+    border-style: solid;
+    border-color: #10b981;
+    background-color: rgba(16, 185, 129, 0.05);
+}
+
+.shadow-hover {
+    transition: all 0.3s ease;
+}
+
+.shadow-hover:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--glass-shadow) !important;
+}
+
+.min-width-80 {
+    min-width: 80px;
+}
+
+.resume-preview {
+    animation: fadeInSlide 0.6s ease-out;
+}
+
+@keyframes fadeInSlide {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.skill-badge {
+    background: var(--border-color) !important;
+    color: var(--text-main) !important;
+    transition: all 0.2s ease;
+}
+
+.skill-badge:hover {
+    background-color: var(--primary) !important;
+    color: white !important;
+    transform: scale(1.05);
+}
+
+[data-theme='dark'] .upload-dropzone {
+    background-color: rgba(255, 255, 255, 0.02);
+}

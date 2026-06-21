@@ -1,0 +1,110 @@
+<div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-8">
+        <!-- New Upload Card -->
+        <div class="card shadow-lg border-0 rounded-4 overflow-hidden mb-5">
+            <div class="card-body p-5">
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold text-dark display-6 mb-2">Build Your Future</h2>
+                    <p class="text-muted">Upload your professional story and let AI decode your brilliance</p>
+                </div>
+
+                <!-- Dropzone Area -->
+                <div class="upload-dropzone p-5 text-center mb-4 cursor-pointer position-relative"
+                    (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)" (drop)="onDrop($event)"
+                    (click)="fileInput.click()" [class.drag-over]="dragOver" [class.has-file]="selectedFile">
+
+                    <input type="file" #fileInput class="d-none" (change)="onFileSelected($event)"
+                        accept=".pdf,.docx,.doc,.txt">
+
+                    <div *ngIf="!selectedFile && !uploading">
+                        <i class="bi bi-cloud-arrow-up-fill display-2 text-primary mb-3"></i>
+                        <h4 class="fw-bold">Drag & Drop Resume</h4>
+                        <p class="text-muted">or click to browse your files</p>
+                        <div class="mt-3">
+                            <span class="badge bg-light text-dark border me-2">PDF</span>
+                            <span class="badge bg-light text-dark border me-2">DOCX</span>
+                            <span class="badge bg-light text-dark border">TXT</span>
+                        </div>
+                    </div>
+
+                    <div *ngIf="selectedFile && !uploading">
+                        <i class="bi bi-file-earmark-check-fill display-2 text-success mb-3"></i>
+                        <h4 class="fw-bold mb-1 text-truncate px-3">{{ selectedFile.name }}</h4>
+                        <p class="text-muted">{{ (selectedFile.size / 1024 / 1024).toFixed(2) }} MB</p>
+                        <button class="btn btn-sm btn-outline-danger mt-3 px-4 rounded-pill"
+                            (click)="clearFile(); $event.stopPropagation()">
+                            <i class="bi bi-trash3 me-2"></i>Remove File
+                        </button>
+                    </div>
+
+                    <div *ngIf="uploading">
+                        <div class="spinner-border text-primary display-4 mb-3" style="width: 3rem; height: 3rem;"
+                            role="status"></div>
+                        <h4 class="fw-bold">AI Decoding in Progress...</h4>
+                        <p class="text-muted">Analyzing structure, skills, and experience</p>
+                    </div>
+                </div>
+
+                <div *ngIf="error" class="alert alert-danger border-0 rounded-3 mb-4 d-flex align-items-center gap-3">
+                    <i class="bi bi-exclamation-octagon-fill h4 mb-0"></i>
+                    <div>{{ error }}</div>
+                </div>
+
+                <div class="d-grid">
+                    <button class="btn btn-primary btn-lg py-3 rounded-pill fw-bold shadow-sm"
+                        [disabled]="!selectedFile || uploading" (click)="uploadResume()">
+                        <i class="bi bi-stars me-2"></i> Analyze with AI
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Preview -->
+        <div *ngIf="uploadResult" class="resume-preview">
+            <div class="d-flex align-items-center gap-3 mb-4">
+                <i class="bi bi-check2-circle text-success h2 mb-0"></i>
+                <h3 class="fw-bold mb-0">Analysis Complete</h3>
+            </div>
+
+            <div class="card shadow rounded-4 border-0 mb-5">
+                <div class="card-body p-4">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <h6 class="text-muted text-uppercase small fw-bold mb-3">Candidate Details</h6>
+                            <h4 class="fw-bold mb-1">{{ uploadResult.data?.personal_info?.name || 'Name not detected' }}
+                            </h4>
+                            <p class="text-primary mb-0"><i class="bi bi-envelope me-2"></i>{{
+                                uploadResult.data?.personal_info?.email || 'Email not detected' }}</p>
+                        </div>
+                        <div class="col-md-6 text-md-end">
+                            <h6 class="text-muted text-uppercase small fw-bold mb-3">Experience Meta</h6>
+                            <div class="d-flex gap-3 justify-content-md-end">
+                                <div class="text-center p-2 bg-light rounded-3 min-width-80">
+                                    <div class="fw-bold text-dark">{{ uploadResult.data?.experience?.length || 0 }}
+                                    </div>
+                                    <div class="small text-muted">Roles</div>
+                                </div>
+                                <div class="text-center p-2 bg-light rounded-3 min-width-80">
+                                    <div class="fw-bold text-dark">{{ uploadResult.data?.skills?.length || 0 }}</div>
+                                    <div class="small text-muted">Skills</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="my-4 opacity-10">
+
+                    <div>
+                        <h6 class="text-muted text-uppercase small fw-bold mb-3">Professional Skillset</h6>
+                        <div class="d-flex flex-wrap gap-2">
+                            <span *ngFor="let skill of uploadResult.data?.skills"
+                                class="skill-badge badge bg-primary bg-opacity-10 text-primary border-0 p-2 px-3">
+                                {{ skill }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

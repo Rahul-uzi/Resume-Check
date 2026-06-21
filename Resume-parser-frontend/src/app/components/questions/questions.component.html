@@ -1,0 +1,72 @@
+<div class="questions-container p-4 rounded-4 shadow-sm">
+    <div class="questions-header mb-4 pb-3">
+        <h4 class="fw-bold"><i class="bi bi-lightbulb-fill text-warning me-2"></i>Strategic Prep Board</h4>
+        <p class="text-muted small">AI-curated interview insights matched to this professional profile</p>
+    </div>
+
+    <!-- Loading State -->
+    <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-grow text-primary" role="status"></div>
+        <p class="text-muted mt-3 small">Synthesizing behavioral and technical questions...</p>
+    </div>
+
+    <!-- Error State -->
+    <div *ngIf="error" class="alert alert-danger border-0 rounded-3 small p-3 mb-4">
+        <i class="bi bi-bug-fill me-2"></i> {{ error }}
+    </div>
+
+    <!-- Questions List -->
+    <div *ngIf="!loading && questions.length > 0" class="list-group list-group-flush">
+        <div *ngFor="let question of questions; let i = index" class="list-group-item border-0 px-0 mb-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+                <span class="badge rounded-pill badge-skill shadow-sm">
+                    {{ question.skill }}
+                </span>
+                <span class="difficulty-label smallest-uppercase fw-bold">{{ question.difficulty }}</span>
+            </div>
+
+            <h5 class="fw-bold mb-3 lh-base">{{ question.question }}</h5>
+
+            <button class="btn btn-sm btn-insight rounded-pill px-4 shadow-sm" (click)="toggleAnswer(i)">
+                {{ showAnswers[i] ? 'Obscure Insight' : 'Reveal Model Answer' }}
+            </button>
+
+            <div *ngIf="showAnswers[i]" class="mt-3 p-4 answer-box rounded-4 slide-down">
+                <div class="d-flex align-items-center gap-2 mb-3 text-primary small fw-bold text-uppercase">
+                    <i class="bi bi-robot"></i> AI Recommended Pattern
+                </div>
+                <p class="small mb-0 lh-lg">{{ question.answer }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="!loading && questions.length === 0 && !error" class="text-center py-5 opacity-50">
+        <i class="bi bi-question-diamond display-4 d-block mb-3"></i>
+        <p class="text-muted">No specific questions pattern detected for this profile.</p>
+    </div>
+</div>
+
+<style>
+    .smallest-uppercase {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .slide-down {
+        animation: slideDown 0.3s ease-out;
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
